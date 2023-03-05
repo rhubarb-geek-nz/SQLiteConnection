@@ -141,6 +141,4 @@ else
 
 Copy-Item -Path "$BINDIR" -Destination "SQLiteConnection" -Recurse
 
-Copy-Item -Path "SQLiteConnection.psd1" -Destination "SQLiteConnection/SQLiteConnection.psd1"
-
 Compress-Archive -Path "SQLiteConnection" -DestinationPath "SQLiteConnection.zip"
