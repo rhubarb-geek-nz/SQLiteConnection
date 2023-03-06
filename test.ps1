@@ -18,6 +18,12 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>
 #
 
+param(
+	$ConnectionString = "Data Source=test.db;",
+	$CommandText = "SELECT * FROM MESSAGES"
+)
+
+
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 
@@ -37,11 +43,11 @@ INSERT INTO MESSAGES (CONTENT) VALUES ('Hello World');
 	{
 		Exit $LastExitCode
 	}
-} 
+}
 
-Import-Module "./bin/Release/netstandard2.0/SQLiteConnection.dll"
+Write-Host $Env:PSModulePath
 
-$Connection = New-SQLiteConnection -ConnectionString "Data Source=test.db;"
+$Connection = New-SQLiteConnection -ConnectionString $ConnectionString
 
 try
 {
@@ -49,7 +55,7 @@ try
 
 	$Command = $Connection.CreateCommand()
 
-	$Command.CommandText = "SELECT * FROM MESSAGES"
+	$Command.CommandText = $CommandText
 
 	$Reader = $Command.ExecuteReader()
 
