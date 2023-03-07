@@ -19,13 +19,11 @@
 #
 
 param(
-	$ConnectionString = "Data Source=test.db;",
-	$CommandText = "SELECT * FROM MESSAGES"
+	$ConnectionString = 'Data Source=test.db;',
+	$CommandText = 'SELECT * FROM MESSAGES'
 )
 
-
 $ErrorActionPreference = "Stop"
-$ProgressPreference = "SilentlyContinue"
 
 trap
 {
@@ -45,8 +43,6 @@ INSERT INTO MESSAGES (CONTENT) VALUES ('Hello World');
 	}
 }
 
-Write-Host $Env:PSModulePath
-
 $Connection = New-SQLiteConnection -ConnectionString $ConnectionString
 
 try
@@ -61,10 +57,11 @@ try
 
 	try
 	{
-		while ($Reader.Read())
-		{
-			Write-Host $Reader.GetString(0)
-		}
+		$DataTable = New-Object System.Data.DataTable
+
+		$DataTable.Load($Reader)
+
+		$DataTable | Format-Table
 	}
 	finally
 	{
