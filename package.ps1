@@ -18,9 +18,12 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>
 #
 
+param(
+	$Version = "1.0.117.0"
+)
+
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
-$VERSION = "1.0.117.0"
 $BINDIR = "bin/Release/netstandard2.0"
 $RID = [System.Runtime.InteropServices.RuntimeInformation]::RuntimeIdentifier
 
@@ -44,11 +47,11 @@ If ( $LastExitCode -ne 0 )
 	Exit $LastExitCode
 }
 
-$SQLZIP = "sqlite-netStandard20-binary-$VERSION.zip"
+$SQLZIP = "sqlite-netStandard20-binary-$Version.zip"
 
 if (-not(Test-Path "$SQLZIP"))
 {
-	Invoke-WebRequest -Uri "https://system.data.sqlite.org/blobs/$VERSION/$SQLZIP" -OutFile "$SQLZIP" 
+	Invoke-WebRequest -Uri "https://system.data.sqlite.org/blobs/$Version/$SQLZIP" -OutFile "$SQLZIP"
 }
 
 Expand-Archive -LiteralPath "$SQLZIP" -DestinationPath "$BINDIR"
@@ -58,25 +61,25 @@ foreach ($Name in "dll.config", "pdb", "xml")
 	Remove-Item -LiteralPath "$BINDIR/System.Data.SQLite.$Name"
 }
 
-$WINZIP = "SQLite.Interop-$VERSION-win.zip"
+$WINZIP = "SQLite.Interop-$Version-win.zip"
 
 if (-not(Test-Path "$WINZIP"))
 {
-	Invoke-WebRequest -Uri "https://github.com/rhubarb-geek-nz/SQLite.Interop-win/releases/download/$VERSION/$WINZIP" -OutFile "$WINZIP" 
+	Invoke-WebRequest -Uri "https://github.com/rhubarb-geek-nz/SQLite.Interop-win/releases/download/$Version/$WINZIP" -OutFile "$WINZIP"
 }
 
-$LINUXZIP = "SQLite.Interop-$VERSION-debian.11.zip"
+$LINUXZIP = "SQLite.Interop-$Version-debian.11.zip"
 
 if (-not(Test-Path "$LINUXZIP"))
 {
-	Invoke-WebRequest -Uri "https://github.com/rhubarb-geek-nz/SQLite.Interop/releases/download/$VERSION/$LINUXZIP" -OutFile "$LINUXZIP" 
+	Invoke-WebRequest -Uri "https://github.com/rhubarb-geek-nz/SQLite.Interop/releases/download/$Version/$LINUXZIP" -OutFile "$LINUXZIP"
 }
 
-$OSXZIP = "SQLite.Interop-$VERSION-osx.13.0.zip"
+$OSXZIP = "SQLite.Interop-$Version-osx.13.0.zip"
 
 if (-not(Test-Path "$OSXZIP"))
 {
-	Invoke-WebRequest -Uri "https://github.com/rhubarb-geek-nz/SQLite.Interop/releases/download/$VERSION/$OSXZIP" -OutFile "$OSXZIP" 
+	Invoke-WebRequest -Uri "https://github.com/rhubarb-geek-nz/SQLite.Interop/releases/download/$Version/$OSXZIP" -OutFile "$OSXZIP"
 }
 
 foreach ($ZIP in "$WINZIP", "$LINUXZIP", "$OSXZIP")
@@ -141,4 +144,23 @@ else
 
 Copy-Item -Path "$BINDIR" -Destination "SQLiteConnection" -Recurse
 
-Compress-Archive -Path "SQLiteConnection" -DestinationPath "SQLiteConnection.zip"
+@"
+@{
+	RootModule = 'SQLiteConnection.dll'
+	ModuleVersion = '$Version'
+	GUID = 'e8e28b5f-a18e-4630-a957-856baefed648'
+	Author = 'Roger Brown'
+	CompanyName = 'rhubarb-geek-nz'
+	Copyright = '(c) Roger Brown. All rights reserved.'
+	FunctionsToExport = @()
+	CmdletsToExport = @('New-SQLiteConnection')
+	VariablesToExport = '*'
+	AliasesToExport = @()
+	PrivateData = @{
+		PSData = @{
+		}
+	}
+}
+"@ | Set-Content -Path "SQLiteConnection/SQLiteConnection.psd1"
+
+Compress-Archive -Path "SQLiteConnection" -DestinationPath "SQLiteConnection-$Version.zip"
