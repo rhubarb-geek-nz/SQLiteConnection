@@ -115,6 +115,7 @@ Version: $Version
 Release: $RID
 Requires: powershell
 License: LGPL3
+Packager: $Env:MAINTAINER
 Summary: PowerShell SQLiteConnection Cmdlet
 Prefix: /$ModulesPath
 
