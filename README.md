@@ -5,26 +5,26 @@ Very simple `PowerShell` module for creating a connection to an `SQLite` databas
 The module contains the native shared libraries containing the `SQLite` implementation.
 
 ```
-% unzip -l SQLiteConnection.zip
-Archive:  SQLiteConnection.zip
+$ unzip -l SQLiteConnection-1.0.117.0.zip
+Archive:  SQLiteConnection-1.0.117.0.zip
   Length      Date    Time    Name
 ---------  ---------- -----   ----
-     3145  03-05-2023 02:48   SQLiteConnection/SQLiteConnection.deps.json
-    12512  03-05-2023 16:56   SQLiteConnection/SQLiteConnection.dll
-     7904  03-05-2023 02:48   SQLiteConnection/SQLiteConnection.pdb
-    10937  03-05-2023 16:56   SQLiteConnection/SQLiteConnection.psd1
-   370688  11-25-2022 14:09   SQLiteConnection/System.Data.SQLite.dll
-  1115200  12-03-2022 19:10   SQLiteConnection/linux-arm/SQLite.Interop.dll.so
-  1733680  12-03-2022 19:11   SQLiteConnection/linux-arm64/SQLite.Interop.dll.so
-  1651120  12-03-2022 19:08   SQLiteConnection/linux-x64/SQLite.Interop.dll.so
-  2158576  03-05-2023 16:35   SQLiteConnection/osx-arm64/SQLite.Interop.dll.dylib
-  2092864  03-05-2023 16:35   SQLiteConnection/osx-x64/SQLite.Interop.dll.dylib
-  1336544  12-03-2022 08:38   SQLiteConnection/win-arm/SQLite.Interop.dll.dll
-  1919200  12-03-2022 08:38   SQLiteConnection/win-arm64/SQLite.Interop.dll.dll
-  1871072  12-03-2022 08:38   SQLiteConnection/win-x64/SQLite.Interop.dll.dll
-  1454304  12-03-2022 08:38   SQLiteConnection/win-x86/SQLite.Interop.dll.dll
+     3145  2023-03-11 00:01   SQLiteConnection/SQLiteConnection.deps.json
+    12512  2023-03-11 00:09   SQLiteConnection/SQLiteConnection.dll
+     7828  2023-03-11 00:01   SQLiteConnection/SQLiteConnection.pdb
+    10951  2023-03-11 00:09   SQLiteConnection/SQLiteConnection.psd1
+   370688  2022-11-25 14:09   SQLiteConnection/System.Data.SQLite.dll
+  1115200  2022-12-03 19:10   SQLiteConnection/linux-arm/SQLite.Interop.dll.so
+  1733680  2022-12-03 19:11   SQLiteConnection/linux-arm64/SQLite.Interop.dll.so
+  1651120  2022-12-03 19:08   SQLiteConnection/linux-x64/SQLite.Interop.dll.so
+  2158576  2023-03-11 00:01   SQLiteConnection/osx-arm64/SQLite.Interop.dll.dylib
+  2092864  2023-03-11 00:01   SQLiteConnection/osx-x64/SQLite.Interop.dll.dylib
+  1336544  2022-12-03 08:38   SQLiteConnection/win-arm/SQLite.Interop.dll.dll
+  1919200  2022-12-03 08:38   SQLiteConnection/win-arm64/SQLite.Interop.dll.dll
+  1871072  2022-12-03 08:38   SQLiteConnection/win-x64/SQLite.Interop.dll.dll
+  1454304  2022-12-03 08:38   SQLiteConnection/win-x86/SQLite.Interop.dll.dll
 ---------                     -------
- 15737746                     14 files
+ 15737684                     14 files
  ```
 
 Use `package.ps1` to build the zip.
@@ -48,3 +48,12 @@ CONTENT
 Hello World
 
 ```
+
+The following scripts can be used to make formal packages for specific RID.
+
+| Script | RID | Installation Directory |
+| ------ | --- | ---------------------- |
+| makemsi.ps1 | win | c:\Program Files\WindowsPowerShell\Modules\SQLiteConnection |
+| makeosx.ps1 | osx | /usr/local/share/powershell/Modules/SQLiteConnection |
+| makedeb.ps1 | linux | /opt/microsoft/powershell/7/Modules/SQLiteConnection |
+| makerpm.ps1 | linux | /opt/microsoft/powershell/7/Modules/SQLiteConnection |
