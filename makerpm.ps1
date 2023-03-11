@@ -114,7 +114,7 @@ Name: $PackageName
 Version: $Version
 Release: $RID
 Requires: powershell
-License: LGPL
+License: LGPL3
 Summary: PowerShell SQLiteConnection Cmdlet
 Prefix: /$ModulesPath
 
