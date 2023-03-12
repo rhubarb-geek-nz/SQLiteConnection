@@ -19,7 +19,8 @@
 #
 
 param(
-	$ModuleName = "SQLiteConnection"
+	$ModuleName = "SQLiteConnection",
+	$Maintainer = "$Env:MAINTAINER"
 )
 
 $ErrorActionPreference = "Stop"
@@ -33,7 +34,7 @@ If ( -not( $Env:PSModulePath.Split(":").Contains("/$ModulesPath") ) )
 	throw "$Env:PSModulePath does not contain /$ModulesPath"
 }
 
-If (-not($Env:MAINTAINER))
+If (-not($Maintainer))
 {
 	throw "MAINTAINER environment not set"
 }
@@ -115,6 +116,27 @@ try
 		throw "du -sk root failed"
 	}
 
+	Get-ChildItem -LiteralPath "root/$ModulesPath" -Recurse | Foreach-Object {
+		If ($_.PSIsContainer)
+		{
+			chmod -w $_.FullName
+
+			If ( $LastExitCode -ne 0 )
+			{
+				Exit $LastExitCode
+			}
+		}
+		else
+		{
+			chmod -wx $_.FullName
+
+			If ( $LastExitCode -ne 0 )
+			{
+				Exit $LastExitCode
+			}
+		}
+	}
+
 	$null = New-Item -Path "root" -Name "DEBIAN" -ItemType "directory"
 
 	$DpkgArch = ( dpkg --print-architecture )
@@ -132,7 +154,7 @@ Depends: powershell
 Section: misc
 Priority: optional
 Installed-Size: $Size
-Maintainer: $Env:MAINTAINER
+Maintainer: $Maintainer
 Description: PowerShell SQLiteConnection Cmdlet
 "@ | Set-Content "root/DEBIAN/control"
 
@@ -149,6 +171,8 @@ finally
 	{
 		if (Test-Path $Name)
 		{
+			chmod -R +w $Name
+
 			Remove-Item "$Name" -Recurse -Force
 		}
 	}
