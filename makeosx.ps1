@@ -41,7 +41,7 @@ $null = New-Item -Path "." -Name "root/$ModulesPath/$ModuleName" -ItemType "dire
 
 try
 {
-	foreach ($Name in "$ModuleName.psd1", "$ModuleName.dll", "$ModuleName.deps.json", "System.Data.SQLite.dll")
+	foreach ($Name in "$ModuleName.psd1", "$ModuleName.dll", "System.Data.SQLite.dll")
 	{
 		Copy-Item -Path "$ModuleName/$Name" -Destination "root/$ModulesPath/$ModuleName/$Name"
 	}

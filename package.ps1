@@ -61,6 +61,11 @@ foreach ($Name in "dll.config", "pdb", "xml")
 	Remove-Item -LiteralPath "$BINDIR/System.Data.SQLite.$Name"
 }
 
+foreach ($Name in "deps.json", "pdb")
+{
+	Remove-Item -LiteralPath "$BINDIR/SQLiteConnection.$Name"
+}
+
 $WINZIP = "SQLite.Interop-$Version-win.zip"
 
 if (-not(Test-Path "$WINZIP"))

@@ -26,14 +26,8 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="ProductComponents">
-      <Component Id="CSQLiteConnectionDepsJson" Guid="*" Directory="INSTALLDIR2" Win64="$(env.SQLITEISWIN64)">
-        <File Id="FSQLiteConnectionDepsJson" KeyPath="yes" Source="$(env.SOURCEDIR)\SQLiteConnection.deps.json" />
-      </Component>
       <Component Id="CSQLiteConnectionDll" Guid="*" Directory="INSTALLDIR2" Win64="$(env.SQLITEISWIN64)">
         <File Id="FSQLiteConnectionDll" KeyPath="yes" Source="$(env.SOURCEDIR)\SQLiteConnection.dll" />
-      </Component>
-      <Component Id="CSQLiteConnectionPdb" Guid="*" Directory="INSTALLDIR2" Win64="$(env.SQLITEISWIN64)">
-        <File Id="FSQLiteConnectionPdb" KeyPath="yes" Source="$(env.SOURCEDIR)\SQLiteConnection.pdb" />
       </Component>
       <Component Id="CSQLiteConnectionPsd1" Guid="*" Directory="INSTALLDIR2" Win64="$(env.SQLITEISWIN64)">
         <File Id="FSQLiteConnectionPsd1" KeyPath="yes" Source="$(env.SOURCEDIR)\SQLiteConnection.psd1" />

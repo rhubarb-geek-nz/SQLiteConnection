@@ -58,7 +58,7 @@ $null = New-Item -Path "." -Name "rpms" -ItemType "directory"
 
 try
 {
-	foreach ($Name in "$ModuleName.psd1", "$ModuleName.dll", "$ModuleName.deps.json", "System.Data.SQLite.dll")
+	foreach ($Name in "$ModuleName.psd1", "$ModuleName.dll", "System.Data.SQLite.dll")
 	{
 		Copy-Item -Path "$ModuleName/$Name" -Destination "root/$ModulesPath/$ModuleName/$Name"
 	}
@@ -127,7 +127,6 @@ PowerShell Cmdlet for connection to SQLite databases
 %dir %attr(555,root,root) /$ModulesPath/SQLiteConnection
 %attr(444,root,root)      /$ModulesPath/SQLiteConnection/SQLiteConnection.dll
 %attr(444,root,root)      /$ModulesPath/SQLiteConnection/SQLiteConnection.psd1
-%attr(444,root,root)      /$ModulesPath/SQLiteConnection/SQLiteConnection.deps.json
 %attr(444,root,root)      /$ModulesPath/SQLiteConnection/System.Data.SQLite.dll
 %attr(444,root,root)      /$ModulesPath/SQLiteConnection/SQLite.Interop.dll
 
