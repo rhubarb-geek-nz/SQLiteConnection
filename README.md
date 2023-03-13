@@ -9,22 +9,20 @@ $ unzip -l SQLiteConnection-1.0.117.0.zip
 Archive:  SQLiteConnection-1.0.117.0.zip
   Length      Date    Time    Name
 ---------  ---------- -----   ----
-     3145  2023-03-11 00:01   SQLiteConnection/SQLiteConnection.deps.json
-    12512  2023-03-11 00:09   SQLiteConnection/SQLiteConnection.dll
-     7828  2023-03-11 00:01   SQLiteConnection/SQLiteConnection.pdb
-    10951  2023-03-11 00:09   SQLiteConnection/SQLiteConnection.psd1
+     5120  2023-03-13 02:26   SQLiteConnection/SQLiteConnection.dll
+      385  2023-03-13 02:26   SQLiteConnection/SQLiteConnection.psd1
    370688  2022-11-25 14:09   SQLiteConnection/System.Data.SQLite.dll
+  1336544  2022-12-03 08:38   SQLiteConnection/win-arm/SQLite.Interop.dll.dll
+  2092864  2023-03-13 02:26   SQLiteConnection/osx-x64/SQLite.Interop.dll.dylib
   1115200  2022-12-03 19:10   SQLiteConnection/linux-arm/SQLite.Interop.dll.so
   1733680  2022-12-03 19:11   SQLiteConnection/linux-arm64/SQLite.Interop.dll.so
-  1651120  2022-12-03 19:08   SQLiteConnection/linux-x64/SQLite.Interop.dll.so
-  2158576  2023-03-11 00:01   SQLiteConnection/osx-arm64/SQLite.Interop.dll.dylib
-  2092864  2023-03-11 00:01   SQLiteConnection/osx-x64/SQLite.Interop.dll.dylib
-  1336544  2022-12-03 08:38   SQLiteConnection/win-arm/SQLite.Interop.dll.dll
-  1919200  2022-12-03 08:38   SQLiteConnection/win-arm64/SQLite.Interop.dll.dll
-  1871072  2022-12-03 08:38   SQLiteConnection/win-x64/SQLite.Interop.dll.dll
   1454304  2022-12-03 08:38   SQLiteConnection/win-x86/SQLite.Interop.dll.dll
+  2158576  2023-03-13 02:26   SQLiteConnection/osx-arm64/SQLite.Interop.dll.dylib
+  1871072  2022-12-03 08:38   SQLiteConnection/win-x64/SQLite.Interop.dll.dll
+  1651120  2022-12-03 19:08   SQLiteConnection/linux-x64/SQLite.Interop.dll.so
+  1919200  2022-12-03 08:38   SQLiteConnection/win-arm64/SQLite.Interop.dll.dll
 ---------                     -------
- 15737684                     14 files
+ 15708753                     12 files
  ```
 
 Use `package.ps1` to build the zip.
