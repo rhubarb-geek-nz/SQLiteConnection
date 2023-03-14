@@ -19,7 +19,8 @@
 #
 
 param(
-	$ModuleName = "SQLiteConnection"
+	$ModuleName = "SQLiteConnection",
+	$Maintainer = "$Env:MAINTAINER"
 )
 
 $ErrorActionPreference = "Stop"
@@ -33,7 +34,7 @@ If ( -not( $Env:PSModulePath.Split(":").Contains("/$ModulesPath") ) )
 	throw "$Env:PSModulePath does not contain /$ModulesPath"
 }
 
-If (-not($Env:MAINTAINER))
+If (-not($Maintainer))
 {
 	throw "MAINTAINER environment not set"
 }
@@ -115,7 +116,7 @@ Version: $Version
 Release: $RID
 Requires: powershell
 License: LGPL3
-Packager: $Env:MAINTAINER
+Packager: $Maintainer
 Summary: PowerShell SQLiteConnection Cmdlet
 Prefix: /$ModulesPath
 
