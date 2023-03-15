@@ -46,12 +46,3 @@ CONTENT
 Hello World
 
 ```
-
-The following scripts can be used to make formal packages for specific RID.
-
-| Script | RID | Installation Directory |
-| ------ | --- | ---------------------- |
-| makemsi.ps1 | win | c:\Program Files\WindowsPowerShell\Modules\SQLiteConnection |
-| makeosx.ps1 | osx | /usr/local/share/powershell/Modules/SQLiteConnection |
-| makedeb.ps1 | linux | /opt/microsoft/powershell/7/Modules/SQLiteConnection |
-| makerpm.ps1 | linux | /opt/microsoft/powershell/7/Modules/SQLiteConnection |
