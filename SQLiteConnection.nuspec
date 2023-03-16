@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>rhubarb-geek-nz.SQLiteConnection</id>
+    <version>1.0.117.0</version>
+    <authors>rhubarb-geek-nz</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">LGPL-3.0-or-later</license>
+    <readme>README.md</readme>
+    <projectUrl>https://github.com/rhubarb-geek-nz/MySqlConnection</projectUrl>
+    <description>SQLite Connection Tool</description>
+    <releaseNotes>NuGet package for SQLiteConnection</releaseNotes>
+    <copyright>(c) Roger Brown. All rights reserved.</copyright>
+    <tags>New-SQLiteConnection</tags>
+  </metadata>
+  <files>
+     <file src="rhubarb-geek-nz.SQLiteConnection\README.md" target="" />
+     <file src="rhubarb-geek-nz.SQLiteConnection\**.dll" target="" />
+     <file src="rhubarb-geek-nz.SQLiteConnection\**.so" target="" />
+     <file src="rhubarb-geek-nz.SQLiteConnection\**.dylib" target="" />
+     <file src="rhubarb-geek-nz.SQLiteConnection\*.psd1" target="" />
+  </files>
+</package>
