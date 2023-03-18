@@ -177,6 +177,7 @@ Copy-Item -Path "$BINDIR" -Destination "$ModuleId" -Recurse
 	GUID = 'e8e28b5f-a18e-4630-a957-856baefed648'
 	Author = 'Roger Brown'
 	CompanyName = 'rhubarb-geek-nz'
+	Description = 'SQLite Connection Tool'
 	Copyright = '(c) Roger Brown. All rights reserved.'
 	FunctionsToExport = @()
 	CmdletsToExport = @('New-$ModuleName')
