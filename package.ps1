@@ -21,7 +21,6 @@
 param(
 	$ModuleName = 'SQLiteConnection',
 	$Version = '1.0.117.0',
-	$LinuxRID = 'debian.11',
 	$CompanyName = 'rhubarb-geek-nz'
 )
 
@@ -29,8 +28,8 @@ $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 $BINDIR = "bin/Release/netstandard2.0"
 $RID = [System.Runtime.InteropServices.RuntimeInformation]::RuntimeIdentifier
-$compatiblePSEdition = 'Core'
-$PowerShellVersion = '7.2'
+$compatiblePSEdition = 'Desktop'
+$PowerShellVersion = '5.1'
 
 trap
 {
@@ -81,96 +80,26 @@ foreach ($Name in "deps.json", "pdb")
 }
 
 $WINZIP = "SQLite.Interop-$Version-win.zip"
-$LINUXZIP = "SQLite.Interop-$Version-$LinuxRID.zip"
-$OSXZIP = "SQLite.Interop-$Version-osx.13.0.zip"
 
 if (-not(Test-Path "$WINZIP"))
 {
 	Invoke-WebRequest -Uri "https://github.com/rhubarb-geek-nz/SQLite.Interop-win/releases/download/$Version/$WINZIP" -OutFile "$WINZIP"
 }
 
-if (-not(Test-Path "$LINUXZIP"))
+if (Test-Path $WINZIP)
 {
-	Invoke-WebRequest -Uri "https://github.com/rhubarb-geek-nz/SQLite.Interop/releases/download/$Version/$LINUXZIP" -OutFile "$LINUXZIP"
-}
-
-if (-not(Test-Path "$OSXZIP"))
-{
-	Invoke-WebRequest -Uri "https://github.com/rhubarb-geek-nz/SQLite.Interop/releases/download/$Version/$OSXZIP" -OutFile "$OSXZIP"
-}
-
-foreach ($ZIP in "$WINZIP", "$LINUXZIP", "$OSXZIP")
-{
-	if (Test-Path $ZIP)
-	{
-		Expand-Archive -LiteralPath "$ZIP" -DestinationPath "."
-	}
+	Expand-Archive -LiteralPath "$WINZIP" -DestinationPath "."
 }
 
 $SQLINTEROP = "SQLite.Interop.dll"
 
 foreach ($A in "x64", "arm64", "x86", "arm")
 {
-	if (Test-Path "runtimes/$LinuxRID-$A/native/$SQLINTEROP")
-	{
-		$null = New-Item -Path "$BINDIR" -Name "linux-$A" -ItemType "directory"
-
-		$null = Move-Item -Path "runtimes/$LinuxRID-$A/native/$SQLINTEROP" -Destination "$BINDIR/linux-$A/$SQLINTEROP.so"
-	}
-
 	if (Test-Path "runtimes/win-$A/native/$SQLINTEROP")
 	{
-		$null = New-Item -Path "$BINDIR" -Name "win-$A" -ItemType "directory"
+		$null = New-Item -Path "$BINDIR" -Name "$A" -ItemType "directory"
 
-		$null = Move-Item -Path "runtimes/win-$A/native/$SQLINTEROP" -Destination "$BINDIR/win-$A/$SQLINTEROP.dll"
-	}
-}
-
-foreach ($A in "osx-x64", "osx-arm64")
-{
-	$null = New-Item -Path "$BINDIR" -Name "$A" -ItemType "directory"
-}
-
-if ($RID.StartsWith("osx."))
-{
-	lipo -info "runtimes/osx.13.0/native/$SQLINTEROP"
-
-	If ( $LastExitCode -ne 0 )
-	{
-		Exit $LastExitCode
-	}
-
-	lipo "runtimes/osx.13.0/native/$SQLINTEROP" -extract x86_64 -output "$BINDIR/osx-x64/$SQLINTEROP.dylib"
-
-	If ( $LastExitCode -ne 0 )
-	{
-		Exit $LastExitCode
-	}
-
-	lipo "runtimes/osx.13.0/native/$SQLINTEROP" -extract arm64 -output "$BINDIR/osx-arm64/$SQLINTEROP.dylib"
-
-	If ( $LastExitCode -ne 0 )
-	{
-		Exit $LastExitCode
-	}
-
-	foreach ($Arch in "osx-arm64", "osx-x64")
-	{
-		$Dylib = "$BINDIR/$Arch/SQLite.Interop.dll.dylib"
-
-		& codesign --timestamp --sign "Developer ID Application: $Env:APPLE_DEVELOPER" "$Dylib"
-
-		If ( $LastExitCode -ne 0 )
-		{
-			Exit $LastExitCode
-		}
-	}
-}
-else
-{
-	foreach ($A in "x64", "arm64")
-	{
-		$null = Copy-Item -Path "runtimes/osx.13.0/native/$SQLINTEROP" -Destination "$BINDIR/osx-$A/$SQLINTEROP.dylib"
+		$null = Move-Item -Path "runtimes/win-$A/native/$SQLINTEROP" -Destination "$BINDIR/$A/$SQLINTEROP"
 	}
 }
 
@@ -180,7 +109,7 @@ Copy-Item -Path "$BINDIR" -Destination "$ModuleId" -Recurse
 @{
 	RootModule = '$ModuleName.dll'
 	ModuleVersion = '$Version'
-	GUID = 'e8e28b5f-a18e-4630-a957-856baefed648'
+	GUID = '9c794fa3-d390-4c2b-8bb3-4b8489fb5c8e'
 	Author = '$Author'
 	CompanyName = '$CompanyName'
 	Copyright = '$Copyright'

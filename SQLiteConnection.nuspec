@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package >
   <metadata>
-    <id>rhubarb-geek-nz.SQLiteConnection</id>
+    <id>rhubarb-geek-nz.SQLiteConnection.Desktop</id>
     <version>1.0.117.0</version>
     <authors>Roger Brown</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -13,10 +13,8 @@
     <copyright>(c) Roger Brown. All rights reserved.</copyright>
   </metadata>
   <files>
-     <file src="rhubarb-geek-nz.SQLiteConnection\README.md" target="" />
-     <file src="rhubarb-geek-nz.SQLiteConnection\**.dll" target="" />
-     <file src="rhubarb-geek-nz.SQLiteConnection\**.so" target="" />
-     <file src="rhubarb-geek-nz.SQLiteConnection\**.dylib" target="" />
-     <file src="rhubarb-geek-nz.SQLiteConnection\*.psd1" target="" />
+     <file src="rhubarb-geek-nz.SQLiteConnection.Desktop\README.md" target="" />
+     <file src="rhubarb-geek-nz.SQLiteConnection.Desktop\**.dll" target="" />
+     <file src="rhubarb-geek-nz.SQLiteConnection.Desktop\*.psd1" target="" />
   </files>
 </package>
