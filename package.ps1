@@ -21,13 +21,16 @@
 param(
 	$ModuleName = 'SQLiteConnection',
 	$Version = '1.0.117.0',
-	$LinuxRID = 'debian.11'
+	$LinuxRID = 'debian.11',
+	$CompanyName = 'rhubarb-geek-nz'
 )
 
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 $BINDIR = "bin/Release/netstandard2.0"
 $RID = [System.Runtime.InteropServices.RuntimeInformation]::RuntimeIdentifier
+$compatiblePSEdition = 'Core'
+$PowerShellVersion = '7.2'
 
 trap
 {
@@ -37,8 +40,11 @@ trap
 $xmlDoc = [System.Xml.XmlDocument](Get-Content "$ModuleName.nuspec")
 
 $Version = $xmlDoc.SelectSingleNode("/package/metadata/version").FirstChild.Value
-$CompanyName = $xmlDoc.SelectSingleNode("/package/metadata/authors").FirstChild.Value
 $ModuleId = $xmlDoc.SelectSingleNode("/package/metadata/id").FirstChild.Value
+$ProjectUri = $xmlDoc.SelectSingleNode("/package/metadata/projectUrl").FirstChild.Value
+$Description = $xmlDoc.SelectSingleNode("/package/metadata/description").FirstChild.Value
+$Author = $xmlDoc.SelectSingleNode("/package/metadata/authors").FirstChild.Value
+$Copyright = $xmlDoc.SelectSingleNode("/package/metadata/copyright").FirstChild.Value
 
 foreach ($Name in "obj", "bin", "runtimes", "$ModuleId")
 {
@@ -175,16 +181,19 @@ Copy-Item -Path "$BINDIR" -Destination "$ModuleId" -Recurse
 	RootModule = '$ModuleName.dll'
 	ModuleVersion = '$Version'
 	GUID = 'e8e28b5f-a18e-4630-a957-856baefed648'
-	Author = 'Roger Brown'
-	CompanyName = 'rhubarb-geek-nz'
-	Description = 'SQLite Connection Tool'
-	Copyright = '(c) Roger Brown. All rights reserved.'
+	Author = '$Author'
+	CompanyName = '$CompanyName'
+	Copyright = '$Copyright'
+	Description = '$Description'
+	PowerShellVersion = "$PowerShellVersion"
+	CompatiblePSEditions = @('$compatiblePSEdition')
 	FunctionsToExport = @()
 	CmdletsToExport = @('New-$ModuleName')
 	VariablesToExport = '*'
 	AliasesToExport = @()
 	PrivateData = @{
 		PSData = @{
+			ProjectUri = '$ProjectUri'
 		}
 	}
 }

@@ -3,15 +3,14 @@
   <metadata>
     <id>rhubarb-geek-nz.SQLiteConnection</id>
     <version>1.0.117.0</version>
-    <authors>rhubarb-geek-nz</authors>
+    <authors>Roger Brown</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="expression">LGPL-3.0-or-later</license>
     <readme>README.md</readme>
-    <projectUrl>https://github.com/rhubarb-geek-nz/MySqlConnection</projectUrl>
+    <projectUrl>https://github.com/rhubarb-geek-nz/SQLiteConnection</projectUrl>
     <description>SQLite Connection Tool</description>
     <releaseNotes>NuGet package for SQLiteConnection</releaseNotes>
     <copyright>(c) Roger Brown. All rights reserved.</copyright>
-    <tags>SQLiteConnection</tags>
   </metadata>
   <files>
      <file src="rhubarb-geek-nz.SQLiteConnection\README.md" target="" />
