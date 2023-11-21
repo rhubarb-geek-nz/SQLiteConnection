@@ -20,8 +20,8 @@
 
 param(
 	$ModuleName = 'SQLiteConnection',
-	$Version = '1.0.117.0',
 	$LinuxRID = 'debian.11',
+	$OsxRID = 'osx.11',
 	$CompanyName = 'rhubarb-geek-nz'
 )
 
@@ -82,7 +82,7 @@ foreach ($Name in "deps.json", "pdb")
 
 $WINZIP = "SQLite.Interop-$Version-win.zip"
 $LINUXZIP = "SQLite.Interop-$Version-$LinuxRID.zip"
-$OSXZIP = "SQLite.Interop-$Version-osx.13.0.zip"
+$OSXZIP = "SQLite.Interop-$Version-$OsxRID.zip"
 
 if (-not(Test-Path "$WINZIP"))
 {
@@ -118,6 +118,13 @@ foreach ($A in "x64", "arm64", "x86", "arm")
 		$null = Move-Item -Path "runtimes/$LinuxRID-$A/native/$SQLINTEROP" -Destination "$BINDIR/linux-$A/$SQLINTEROP.so"
 	}
 
+	if (Test-Path "runtimes/$OsxRID-$A/native/$SQLINTEROP")
+	{
+		$null = New-Item -Path "$BINDIR" -Name "osx-$A" -ItemType "directory"
+
+		$null = Move-Item -Path "runtimes/$OsxRID-$A/native/$SQLINTEROP" -Destination "$BINDIR/osx-$A/$SQLINTEROP.dylib"
+	}
+
 	if (Test-Path "runtimes/win-$A/native/$SQLINTEROP")
 	{
 		$null = New-Item -Path "$BINDIR" -Name "win-$A" -ItemType "directory"
@@ -126,84 +133,72 @@ foreach ($A in "x64", "arm64", "x86", "arm")
 	}
 }
 
-foreach ($A in "osx-x64", "osx-arm64")
-{
-	$null = New-Item -Path "$BINDIR" -Name "$A" -ItemType "directory"
-}
-
-if ($RID.StartsWith("osx."))
-{
-	lipo -info "runtimes/osx.13.0/native/$SQLINTEROP"
-
-	If ( $LastExitCode -ne 0 )
-	{
-		Exit $LastExitCode
-	}
-
-	lipo "runtimes/osx.13.0/native/$SQLINTEROP" -extract x86_64 -output "$BINDIR/osx-x64/$SQLINTEROP.dylib"
-
-	If ( $LastExitCode -ne 0 )
-	{
-		Exit $LastExitCode
-	}
-
-	lipo "runtimes/osx.13.0/native/$SQLINTEROP" -extract arm64 -output "$BINDIR/osx-arm64/$SQLINTEROP.dylib"
-
-	If ( $LastExitCode -ne 0 )
-	{
-		Exit $LastExitCode
-	}
-
-	foreach ($Arch in "osx-arm64", "osx-x64")
-	{
-		$Dylib = "$BINDIR/$Arch/SQLite.Interop.dll.dylib"
-
-		& codesign --timestamp --sign "Developer ID Application: $Env:APPLE_DEVELOPER" "$Dylib"
-
-		If ( $LastExitCode -ne 0 )
-		{
-			Exit $LastExitCode
-		}
-	}
-}
-else
-{
-	foreach ($A in "x64", "arm64")
-	{
-		$null = Copy-Item -Path "runtimes/osx.13.0/native/$SQLINTEROP" -Destination "$BINDIR/osx-$A/$SQLINTEROP.dylib"
-	}
-}
-
 Copy-Item -Path "$BINDIR" -Destination "$ModuleId" -Recurse
 
-@"
-@{
-	RootModule = '$ModuleName.dll'
-	ModuleVersion = '$Version'
-	GUID = 'e8e28b5f-a18e-4630-a957-856baefed648'
-	Author = '$Author'
-	CompanyName = '$CompanyName'
-	Copyright = '$Copyright'
-	Description = '$Description'
-	PowerShellVersion = "$PowerShellVersion"
-	CompatiblePSEditions = @('$compatiblePSEdition')
-	FunctionsToExport = @()
-	CmdletsToExport = @('New-$ModuleName')
-	VariablesToExport = '*'
-	AliasesToExport = @()
-	PrivateData = @{
-		PSData = @{
-			ProjectUri = '$ProjectUri'
+New-ModuleManifest -Path "$ModuleId/$ModuleId.psd1" `
+				-RootModule "$ModuleName.dll" `
+				-ModuleVersion $Version `
+				-Guid 'e8e28b5f-a18e-4630-a957-856baefed648' `
+				-Author $Author `
+				-CompanyName $CompanyName `
+				-Copyright $Copyright `
+				-Description $Description `
+				-PowerShellVersion $PowerShellVersion `
+				-CompatiblePSEditions @($compatiblePSEdition) `
+				-FunctionsToExport @() `
+				-CmdletsToExport @("New-$ModuleName") `
+				-VariablesToExport '*' `
+				-AliasesToExport @() `
+				-ProjectUri $ProjectUri
+
+function Justify
+{
+	begin
+	{
+		$Count = 0
+	}
+	process
+	{
+		if ($Count -eq 1)
+		{
+			$Next
 		}
+		if ($Count -gt 1)
+		{
+			"    $Next"
+		}
+
+		$Next = $_
+		$Count = $Count + 1
+	}
+	end
+	{
+		$Next
 	}
 }
-"@ | Set-Content -Path "$ModuleId/$ModuleId.psd1"
+
+Get-Content -LiteralPath "$ModuleId/$ModuleId.psd1" | ForEach-Object {
+	$T = $_.Trim()
+	if ($T)
+	{
+		if ( -not $T.StartsWith('#') )
+		{
+			if ($T.StartsWith('} # End of '))
+			{
+				$_.Substring(0,$_.IndexOf('}')+1)
+			}
+			else
+			{
+				$_
+			}
+		}
+	}
+} | Justify | Set-Content -LiteralPath "$ModuleId/$ModuleId.psd1.clean"
+
+Remove-Item -LiteralPath "$ModuleId/$ModuleId.psd1"
+
+Move-Item -LiteralPath "$ModuleId/$ModuleId.psd1.clean" -Destination "$ModuleId/$ModuleId.psd1"
+
+Import-PowerShellDataFile -LiteralPath "$ModuleId/$ModuleId.psd1"
 
 (Get-Content "./README.md")[0..2] | Set-Content -Path "$ModuleId/README.md"
-
-nuget pack "$ModuleName.nuspec"
-
-If ( $LastExitCode -ne 0 )
-{
-	Exit $LastExitCode
-}
