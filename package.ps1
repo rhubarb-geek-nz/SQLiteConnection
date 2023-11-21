@@ -20,7 +20,6 @@
 
 param(
 	$ModuleName = 'SQLiteConnection',
-	$Version = '1.0.117.0',
 	$CompanyName = 'rhubarb-geek-nz'
 )
 
@@ -105,34 +104,73 @@ foreach ($A in "x64", "arm64", "x86", "arm")
 
 Copy-Item -Path "$BINDIR" -Destination "$ModuleId" -Recurse
 
-@"
-@{
-	RootModule = '$ModuleName.dll'
-	ModuleVersion = '$Version'
-	GUID = '9c794fa3-d390-4c2b-8bb3-4b8489fb5c8e'
-	Author = '$Author'
-	CompanyName = '$CompanyName'
-	Copyright = '$Copyright'
-	Description = '$Description'
-	PowerShellVersion = "$PowerShellVersion"
-	CompatiblePSEditions = @('$compatiblePSEdition')
-	FunctionsToExport = @()
-	CmdletsToExport = @('New-$ModuleName')
-	VariablesToExport = '*'
-	AliasesToExport = @()
-	PrivateData = @{
-		PSData = @{
-			ProjectUri = '$ProjectUri'
+New-ModuleManifest -Path "$ModuleId/$ModuleId.psd1" `
+				-RootModule "$ModuleName.dll" `
+				-ModuleVersion $Version `
+				-Guid '9c794fa3-d390-4c2b-8bb3-4b8489fb5c8e' `
+				-Author $Author `
+				-CompanyName $CompanyName `
+				-Copyright $Copyright `
+				-Description $Description `
+				-PowerShellVersion $PowerShellVersion `
+				-CompatiblePSEditions @($compatiblePSEdition) `
+				-FunctionsToExport @() `
+				-CmdletsToExport @("New-$ModuleName") `
+				-VariablesToExport '*' `
+				-AliasesToExport @() `
+				-ProjectUri $ProjectUri
+
+function Justify
+{
+	begin
+	{
+		$Count = 0
+	}
+	process
+	{
+		if ($Count -eq 1)
+		{
+			$Next
 		}
+		if ($Count -gt 1)
+		{
+			"    $Next"
+		}
+
+		$Next = $_
+		$Count = $Count + 1
+	}
+	end
+	{
+		$Next
 	}
 }
-"@ | Set-Content -Path "$ModuleId/$ModuleId.psd1"
+
+Get-Content -LiteralPath "$ModuleId/$ModuleId.psd1" | ForEach-Object {
+	$T = $_.Trim()
+	if ($T)
+	{
+		if ( -not $T.StartsWith('#') )
+		{
+			if ($T.StartsWith('} # End of '))
+			{
+				$_.Substring(0,$_.IndexOf('}')+1)
+			}
+			else
+			{
+				$_
+			}
+		}
+	}
+} | Justify | Set-Content -LiteralPath "$ModuleId/$ModuleId.psd1.clean"
+
+Remove-Item -LiteralPath "$ModuleId/$ModuleId.psd1"
+
+Move-Item -LiteralPath "$ModuleId/$ModuleId.psd1.clean" -Destination "$ModuleId/$ModuleId.psd1"
+
+Import-PowerShellDataFile -LiteralPath "$ModuleId/$ModuleId.psd1"
+
+
 
 (Get-Content "./README.md")[0..2] | Set-Content -Path "$ModuleId/README.md"
 
-nuget pack "$ModuleName.nuspec"
-
-If ( $LastExitCode -ne 0 )
-{
-	Exit $LastExitCode
-}
