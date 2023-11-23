@@ -28,7 +28,6 @@ param(
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 $BINDIR = "bin/Release/netstandard2.0"
-$RID = [System.Runtime.InteropServices.RuntimeInformation]::RuntimeIdentifier
 $compatiblePSEdition = 'Core'
 $PowerShellVersion = '7.2'
 
