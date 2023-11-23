@@ -26,7 +26,6 @@ param(
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 $BINDIR = "bin/Release/netstandard2.0"
-$RID = [System.Runtime.InteropServices.RuntimeInformation]::RuntimeIdentifier
 $compatiblePSEdition = 'Desktop'
 $PowerShellVersion = '5.1'
 
@@ -35,92 +34,12 @@ trap
 	throw $PSItem
 }
 
-$xmlDoc = [System.Xml.XmlDocument](Get-Content "$ModuleName.nuspec")
-
-$Version = $xmlDoc.SelectSingleNode("/package/metadata/version").FirstChild.Value
-$ModuleId = $xmlDoc.SelectSingleNode("/package/metadata/id").FirstChild.Value
-$ProjectUri = $xmlDoc.SelectSingleNode("/package/metadata/projectUrl").FirstChild.Value
-$Description = $xmlDoc.SelectSingleNode("/package/metadata/description").FirstChild.Value
-$Author = $xmlDoc.SelectSingleNode("/package/metadata/authors").FirstChild.Value
-$Copyright = $xmlDoc.SelectSingleNode("/package/metadata/copyright").FirstChild.Value
-
-foreach ($Name in "obj", "bin", "runtimes", "$ModuleId")
+function Get-SingleNodeValue([System.Xml.XmlDocument]$doc,[string]$path)
 {
-	if (Test-Path "$Name")
-	{
-		Remove-Item "$Name" -Force -Recurse
-	} 
+	return $doc.SelectSingleNode($path).FirstChild.Value
 }
 
-dotnet build $ModuleName.csproj --configuration Release
-
-If ( $LastExitCode -ne 0 )
-{
-	Exit $LastExitCode
-}
-
-$SQLZIP = "sqlite-netStandard20-binary-$Version.zip"
-
-if (-not(Test-Path "$SQLZIP"))
-{
-	Invoke-WebRequest -Uri "https://system.data.sqlite.org/blobs/$Version/$SQLZIP" -OutFile "$SQLZIP"
-}
-
-Expand-Archive -LiteralPath "$SQLZIP" -DestinationPath "$BINDIR"
-
-foreach ($Name in "dll.config", "pdb", "xml")
-{
-	Remove-Item -LiteralPath "$BINDIR/System.Data.SQLite.$Name"
-}
-
-foreach ($Name in "deps.json", "pdb")
-{
-	Remove-Item -LiteralPath "$BINDIR/$ModuleName.$Name"
-}
-
-$WINZIP = "SQLite.Interop-$Version-win.zip"
-
-if (-not(Test-Path "$WINZIP"))
-{
-	Invoke-WebRequest -Uri "https://github.com/rhubarb-geek-nz/SQLite.Interop-win/releases/download/$Version/$WINZIP" -OutFile "$WINZIP"
-}
-
-if (Test-Path $WINZIP)
-{
-	Expand-Archive -LiteralPath "$WINZIP" -DestinationPath "."
-}
-
-$SQLINTEROP = "SQLite.Interop.dll"
-
-foreach ($A in "x64", "arm64", "x86", "arm")
-{
-	if (Test-Path "runtimes/win-$A/native/$SQLINTEROP")
-	{
-		$null = New-Item -Path "$BINDIR" -Name "$A" -ItemType "directory"
-
-		$null = Move-Item -Path "runtimes/win-$A/native/$SQLINTEROP" -Destination "$BINDIR/$A/$SQLINTEROP"
-	}
-}
-
-Copy-Item -Path "$BINDIR" -Destination "$ModuleId" -Recurse
-
-New-ModuleManifest -Path "$ModuleId/$ModuleId.psd1" `
-				-RootModule "$ModuleName.dll" `
-				-ModuleVersion $Version `
-				-Guid '9c794fa3-d390-4c2b-8bb3-4b8489fb5c8e' `
-				-Author $Author `
-				-CompanyName $CompanyName `
-				-Copyright $Copyright `
-				-Description $Description `
-				-PowerShellVersion $PowerShellVersion `
-				-CompatiblePSEditions @($compatiblePSEdition) `
-				-FunctionsToExport @() `
-				-CmdletsToExport @("New-$ModuleName") `
-				-VariablesToExport '*' `
-				-AliasesToExport @() `
-				-ProjectUri $ProjectUri
-
-function Justify
+function FirstAndLast
 {
 	begin
 	{
@@ -146,31 +65,125 @@ function Justify
 	}
 }
 
-Get-Content -LiteralPath "$ModuleId/$ModuleId.psd1" | ForEach-Object {
-	$T = $_.Trim()
-	if ($T)
+function NoComment
+{
+	process
 	{
-		if ( -not $T.StartsWith('#') )
+		$T = $_.Trim()
+		if ($T)
 		{
-			if ($T.StartsWith('} # End of '))
+			if ( -not $T.StartsWith('#') )
 			{
-				$_.Substring(0,$_.IndexOf('}')+1)
-			}
-			else
-			{
-				$_
+				if ($T.StartsWith('} # End of '))
+				{
+					$_.Substring(0,$_.IndexOf('}')+1)
+				}
+				else
+				{
+					$_
+				}
 			}
 		}
 	}
-} | Justify | Set-Content -LiteralPath "$ModuleId/$ModuleId.psd1.clean"
+}
 
-Remove-Item -LiteralPath "$ModuleId/$ModuleId.psd1"
+function Cleanup
+{
+	foreach ($Name in "obj", "bin", "runtimes", "$ModuleId.psd1")
+	{
+		if (Test-Path "$Name")
+		{
+			Remove-Item "$Name" -Force -Recurse
+		} 
+	}
+}
 
-Move-Item -LiteralPath "$ModuleId/$ModuleId.psd1.clean" -Destination "$ModuleId/$ModuleId.psd1"
+$xmlDoc = [System.Xml.XmlDocument](Get-Content "$ModuleName.nuspec")
+
+$Version = Get-SingleNodeValue $xmlDoc "/package/metadata/version"
+$ModuleId = Get-SingleNodeValue $xmlDoc "/package/metadata/id"
+$ProjectUri = Get-SingleNodeValue $xmlDoc "/package/metadata/projectUrl"
+$Description = Get-SingleNodeValue $xmlDoc "/package/metadata/description"
+$Author = Get-SingleNodeValue $xmlDoc "/package/metadata/authors"
+$Copyright = Get-SingleNodeValue $xmlDoc "/package/metadata/copyright"
+
+Cleanup
+
+if (Test-Path "$ModuleId")
+{
+	Remove-Item "$ModuleId" -Force -Recurse
+}
+ 
+dotnet build $ModuleName.csproj --configuration Release
+
+If ( $LastExitCode -ne 0 )
+{
+	Exit $LastExitCode
+}
+
+$SQLZIP = "sqlite-netStandard20-binary-$Version.zip"
+$WINZIP = "SQLite.Interop-$Version-win.zip"
+$SQLINTEROP = "SQLite.Interop.dll"
+
+$SQLURL = "https://system.data.sqlite.org/blobs"
+$WINURL = "https://github.com/rhubarb-geek-nz/SQLite.Interop-win/releases/download"
+
+foreach ($SRC in @($SQLZIP, $SQLURL, $BINDIR), @($WINZIP, $WINURL, '.'))
+{
+	$ZIP = $SRC[0]
+	$URL = $SRC[1]
+	$DEST = $SRC[2]
+
+	if (-not(Test-Path $ZIP))
+	{
+		Invoke-WebRequest -Uri "$URL/$Version/$ZIP" -OutFile $ZIP
+	}
+
+	Expand-Archive -LiteralPath $ZIP -DestinationPath $DEST
+}
+
+foreach ($SRC in $('System.Data.SQLite', $('dll.config', 'pdb', 'xml')), $($ModuleName, $('deps.json', 'pdb')))
+{
+	$NAME = $SRC[0]
+
+	foreach ($EXT in $SRC[1])
+	{
+		Remove-Item -LiteralPath "$BINDIR/$NAME.$EXT"
+	}
+}
+
+foreach ($A in 'x64', 'arm64', 'x86', 'arm')
+{
+	if (Test-Path "runtimes/win-$A/native/$SQLINTEROP")
+	{
+		$null = New-Item -Path $BINDIR -Name $A -ItemType 'directory'
+
+		$null = Move-Item -Path "runtimes/win-$A/native/$SQLINTEROP" -Destination "$BINDIR/$A/$SQLINTEROP"
+	}
+}
+
+Move-Item -LiteralPath "$BINDIR" -Destination "$ModuleId"
+
+New-ModuleManifest -Path "$ModuleId.psd1" `
+				-RootModule "$ModuleName.dll" `
+				-ModuleVersion $Version `
+				-Guid '9c794fa3-d390-4c2b-8bb3-4b8489fb5c8e' `
+				-Author $Author `
+				-CompanyName $CompanyName `
+				-Copyright $Copyright `
+				-Description $Description `
+				-PowerShellVersion $PowerShellVersion `
+				-CompatiblePSEditions @($compatiblePSEdition) `
+				-FunctionsToExport @() `
+				-CmdletsToExport @("New-$ModuleName") `
+				-VariablesToExport '*' `
+				-AliasesToExport @() `
+				-ProjectUri $ProjectUri
+
+Get-Content -LiteralPath "$ModuleId.psd1" | NoComment | FirstAndLast | Set-Content -LiteralPath "$ModuleId/$ModuleId.psd1"
 
 Import-PowerShellDataFile -LiteralPath "$ModuleId/$ModuleId.psd1"
 
-
-
 (Get-Content "./README.md")[0..2] | Set-Content -Path "$ModuleId/README.md"
 
+Cleanup
