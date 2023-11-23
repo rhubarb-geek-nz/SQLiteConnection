@@ -194,8 +194,6 @@ New-ModuleManifest -Path "$ModuleId.psd1" `
 
 Get-Content -LiteralPath "$ModuleId.psd1" | NoComment | FirstAndLast | Set-Content -LiteralPath "$ModuleId/$ModuleId.psd1"
 
-Remove-Item -LiteralPath "$ModuleId.psd1"
-
 Import-PowerShellDataFile -LiteralPath "$ModuleId/$ModuleId.psd1"
 
 (Get-Content "./README.md")[0..2] | Set-Content -Path "$ModuleId/README.md"
