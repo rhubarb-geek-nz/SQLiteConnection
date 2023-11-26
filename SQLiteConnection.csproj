@@ -3,6 +3,20 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>SQLiteConnection</AssemblyName>
+    <Copyright>Copyright &#169; 2023 Roger Brown</Copyright>
+    <Version>1.0.118.0</Version>
+    <AssemblyTitle>PowerShell Cmdlet for SQLiteConnection</AssemblyTitle>
+    <Product>SQLiteConnection for PowerShell</Product>
+    <Company>rhubarb-geek-nz</Company>
+    <PackageId>rhubarb-geek-nz.SQLiteConnection</PackageId>
+    <Title>SQLiteConnection for PowerShell</Title>
+    <Description>SQLite Connection Tool</Description>
+    <Authors>Roger Brown</Authors>
+    <PackageProjectUrl>https://github.com/rhubarb-geek-nz/SQLiteConnection</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/rhubarb-geek-nz/SQLiteConnection.git</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>SQLiteConnection</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,5 +28,17 @@
   <ItemGroup>
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" />
   </ItemGroup>
+
+  <Target Name="Package" AfterTargets="Publish" Condition=" '$(Configuration)' == 'Release' ">
+    <ItemGroup>
+      <FilesToDelete Include="$(PublishDir)System.Data.SQLite.dll" />
+      <FilesToDelete Include="$(PublishDir)$(AssemblyName).deps.json" />
+      <FilesToDelete Include="$(PublishDir)$(AssemblyName).pdb" />
+    </ItemGroup>
+    <Delete Files="@(FilesToDelete)" />
+    <Exec Command="pwsh ./package.ps1 $(AssemblyName) $(IntermediateOutputPath) $(OutDir) $(PublishDir)" />
+    <RemoveDir Directories="$(PublishDir)runtimes;$(PublishDir)sqlite-netStandard20-binary" />
+    <Delete Files="$(OutDir)$(PackageId).psd1" />
+  </Target>
 
 </Project>

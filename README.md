@@ -4,7 +4,11 @@ Very simple `PowerShell` module for creating a connection to an `SQLite` databas
 
 The module contains the native shared libraries containing the `SQLite` implementation.
 
-Use `package.ps1` to build the module directory.
+Use `dotnet` to build the module directory.
+
+```
+dotnet publish SQLiteConnection.csproj --configuration Release
+```
 
 The `win` platform native dlls come from [rhubarb-geek-nz/SQLite.Interop-win](https://github.com/rhubarb-geek-nz/SQLite.Interop-win)
 
