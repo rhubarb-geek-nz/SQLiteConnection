@@ -18,7 +18,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>
 #
 
-param($ProjectName, $IntermediateOutputPath, $OutDir, $PublishDir, $LinuxRID = 'debian.11', $OsxRID = 'osx.11')
+param($ProjectName, $IntermediateOutputPath, $OutDir, $PublishDir, $LinuxRID = 'alpine.3.17')
 
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
@@ -47,16 +47,13 @@ $AssemblyName = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/AssemblyName
 $CompanyName = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/Company'
 
 $SQLZIP = "sqlite-netStandard20-binary-$Version.zip"
-$WINZIP = "SQLite.Interop-$Version-win.zip"
 $LINUXZIP = "SQLite.Interop-$Version-$LinuxRID.zip"
-$OSXZIP = "SQLite.Interop-$Version-$OsxRID.zip"
 $SQLINTEROP = "SQLite.Interop.dll"
 
 $SQLURL = "https://system.data.sqlite.org/blobs"
-$WINURL = "https://github.com/rhubarb-geek-nz/SQLite.Interop-win/releases/download"
 $OSXURL = "https://github.com/rhubarb-geek-nz/SQLite.Interop/releases/download"
 
-foreach ($SRC in @($SQLZIP, $SQLURL, "$PublishDir/sqlite-netStandard20-binary"), @($WINZIP, $WINURL, $PublishDir), @($OSXZIP, $OSXURL, $PublishDir),@($LINUXZIP, $OSXURL, $PublishDir))
+foreach ($SRC in @($SQLZIP, $SQLURL, "$PublishDir/sqlite-netStandard20-binary"), @($LINUXZIP, $OSXURL, $PublishDir))
 {
 	$ZIP = $SRC[0]
 	$URL = $SRC[1]
@@ -70,20 +67,13 @@ foreach ($SRC in @($SQLZIP, $SQLURL, "$PublishDir/sqlite-netStandard20-binary"),
 	Expand-Archive -LiteralPath "$IntermediateOutputPath$ZIP" -DestinationPath $DEST
 }
 
-foreach ($A in 'x64', 'arm64', 'x86', 'arm')
+foreach ($A in 'x64', 'arm64', 'arm')
 {
-	foreach ($B in @($LinuxRID, 'linux', 'so'), @($OsxRID, 'osx', 'dylib'), @('win', 'win', 'dll'))
+	if (Test-Path "$PublishDir/runtimes/$LinuxRID-$A/native/$SQLINTEROP")
 	{
-		$SRC = $B[0]
-		$DEST = $B[1]
-		$EXT = $B[2]
+		$null = New-Item -Path $PublishDir -Name "linux-$A" -ItemType 'directory'
 
-		if (Test-Path "$PublishDir/runtimes/$SRC-$A/native/$SQLINTEROP")
-		{
-			$null = New-Item -Path $PublishDir -Name "$DEST-$A" -ItemType 'directory'
-
-			$null = Move-Item -Path "$PublishDir/runtimes/$SRC-$A/native/$SQLINTEROP" -Destination "$PublishDir$DEST-$A/$SQLINTEROP.$EXT"
-		}
+		$null = Move-Item -Path "$PublishDir/runtimes/$LinuxRID-$A/native/$SQLINTEROP" -Destination "$PublishDir/linux-$A/$SQLINTEROP.so"
 	}
 }
 

@@ -4,11 +4,11 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>SQLiteConnection</AssemblyName>
     <Copyright>Copyright &#169; 2023 Roger Brown</Copyright>
-    <Version>1.0.118.0</Version>
+    <Version>1.0.117.0</Version>
     <AssemblyTitle>PowerShell Cmdlet for SQLiteConnection</AssemblyTitle>
     <Product>SQLiteConnection for PowerShell</Product>
     <Company>rhubarb-geek-nz</Company>
-    <PackageId>rhubarb-geek-nz.SQLiteConnection</PackageId>
+    <PackageId>rhubarb-geek-nz.SQLiteConnection.Alpine</PackageId>
     <Title>SQLiteConnection for PowerShell</Title>
     <Description>SQLite Connection Tool</Description>
     <Authors>Roger Brown</Authors>
@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.117" />
   </ItemGroup>
 
   <Target Name="Package" AfterTargets="Publish" Condition=" '$(Configuration)' == 'Release' ">
