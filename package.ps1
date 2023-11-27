@@ -18,7 +18,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>
 #
 
-param($ProjectName, $IntermediateOutputPath, $OutDir, $PublishDir, $LinuxRID = 'alpine.3.17')
+param($ProjectName, $IntermediateOutputPath, $OutDir, $PublishDir, $LinuxRID = 'alpine.3.18')
 
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
