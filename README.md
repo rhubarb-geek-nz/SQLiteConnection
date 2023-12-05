@@ -39,3 +39,5 @@ Hello World
 ## Notes
 
 Packaging script uses [Export-PowerShellDataFile](https://www.powershellgallery.com/packages/rhubarb-geek-nz.PowerShellDataFile/1.0.0) to format the manifest file.
+
+This package is published in the [PowerShell Gallery](https://www.powershellgallery.com/packages/rhubarb-geek-nz.SQLiteConnection/1.0.118.0).
