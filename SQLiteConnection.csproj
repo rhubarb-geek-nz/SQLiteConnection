@@ -36,7 +36,9 @@
       <FilesToDelete Include="$(PublishDir)$(AssemblyName).pdb" />
     </ItemGroup>
     <Delete Files="@(FilesToDelete)" />
-    <Exec Command="pwsh ./package.ps1 $(AssemblyName) $(IntermediateOutputPath) $(OutDir) $(PublishDir)" />
+    <Exec Command="dotnet tool restore" />
+    <Exec Command="dotnet pwsh -c &quot;if ( -not ( Get-Module -ListAvailable -Name '$(Company).PowerShellDataFile' ) ) { Install-Module -Name '$(Company).PowerShellDataFile' -Repository 'PSGallery' -Force }&quot; " />
+    <Exec Command="dotnet pwsh -ExecutionPolicy Bypass -File ./package.ps1 $(AssemblyName) $(IntermediateOutputPath) $(OutDir) $(PublishDir)" />
     <RemoveDir Directories="$(PublishDir)runtimes;$(PublishDir)sqlite-netStandard20-binary" />
     <Delete Files="$(OutDir)$(PackageId).psd1" />
   </Target>
