@@ -3,12 +3,12 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>RhubarbGeekNz.SQLiteConnection.Alc</AssemblyName>
-    <Version>1.0.118.0</Version>
+    <Version>1.0.118</Version>
     <CertificateThumbprint>601A8B683F791E51F647D34AD102C38DA4DDB65F</CertificateThumbprint>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.118">
+    <PackageReference Include="System.Data.SQLite.Core" Version="$(Version)">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
   </ItemGroup>

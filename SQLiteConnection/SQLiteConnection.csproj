@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>RhubarbGeekNz.SQLiteConnection</AssemblyName>
     <Copyright>Copyright &#169; 2024 Roger Brown</Copyright>
-    <Version>1.0.118.0</Version>
+    <Version>1.0.118</Version>
     <AssemblyTitle>PowerShell Cmdlet for SQLiteConnection</AssemblyTitle>
     <Product>SQLiteConnection for PowerShell</Product>
     <Company>rhubarb-geek-nz</Company>
@@ -25,7 +25,7 @@
     <PackageReference Include="PowerShellStandard.Library" Version="5.1.1">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="rhubarb-geek-nz.SQLite.Core.NetStandard" Version="1.0.118" />
+    <PackageReference Include="rhubarb-geek-nz.SQLite.Core.NetStandard" Version="$(Version)" />
   </ItemGroup>
 
   <ItemGroup>
