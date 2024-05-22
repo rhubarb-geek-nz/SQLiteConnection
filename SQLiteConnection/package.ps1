@@ -29,6 +29,7 @@ $Author = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/Authors'
 $Copyright = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/Copyright'
 $AssemblyName = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/AssemblyName'
 $CompanyName = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/Company'
+$ReleaseNotes = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/PackageReleaseNotes'
 
 $PublishDirLib = "$PublishDir/lib"
 
@@ -67,6 +68,7 @@ $moduleSettings = @{
 	VariablesToExport = '*'
 	AliasesToExport = @()
 	ProjectUri = $ProjectUri
+	ReleaseNotes = $ReleaseNotes
 }
 
 New-ModuleManifest @moduleSettings
