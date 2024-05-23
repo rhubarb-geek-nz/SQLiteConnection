@@ -25,7 +25,6 @@
     <PackageReference Include="PowerShellStandard.Library" Version="5.1.1">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="rhubarb-geek-nz.SQLite.Core.NetStandard" Version="$(Version)" />
   </ItemGroup>
 
   <ItemGroup>
@@ -53,7 +52,7 @@
     <Exec Command="dotnet tool restore" />
     <Exec Command="dotnet pwsh -ExecutionPolicy Bypass -NoProfile -c &quot;Set-Variable -Name 'ErrorActionPreference' -Value 'Stop'; if ( -not ( Get-Module -ListAvailable -Name '$(Company).PowerShellDataFile' ) ) { Install-Module -Name '$(Company).PowerShellDataFile' -Repository 'PSGallery' -Force }&quot; " />
     <Exec Command="dotnet pwsh -ExecutionPolicy Bypass -NoProfile -File ./package.ps1 $(ProjectName) $(IntermediateOutputPath) $(OutDir) $(PublishDir)" />
-    <RemoveDir Directories="$(PublishDir)runtimes;$(PublishDir)sqlite-netStandard20-binary" />
+    <RemoveDir Directories="$(PublishDir)runtimes" />
     <Delete Files="$(OutDir)$(PackageId).psd1" />
   </Target>
 
