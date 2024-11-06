@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>RhubarbGeekNz.SQLiteConnection</AssemblyName>
     <Copyright>Copyright &#169; 2024 Roger Brown</Copyright>
-    <Version>1.0.118</Version>
+    <Version>1.0.119</Version>
     <AssemblyTitle>PowerShell Cmdlet for SQLiteConnection</AssemblyTitle>
     <Product>SQLiteConnection for PowerShell</Product>
     <Company>rhubarb-geek-nz</Company>
