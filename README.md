@@ -10,7 +10,7 @@ Use `dotnet` to build the module directory.
 dotnet publish SQLiteConnection.csproj --configuration Release
 ```
 
-The `SQLite` runtime comes from [rhubarb-geek-nz/SQLite.Core.NetStandard](https://github.com/rhubarb-geek-nz/SQLite.Core.NetStandard). This provides native binaries for multiple platforms and architectures.
+The `SQLite` runtime comes from [Microsoft.Data.Sqlite](https://www.nuget.org/packages/microsoft.data.sqlite). This provides native binaries for multiple platforms and architectures.
 
 ## Install
 

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>
     <AssemblyName>RhubarbGeekNz.SQLiteConnection.Core</AssemblyName>
     <Copyright>Copyright &#169; 2024 Roger Brown</Copyright>
     <AssemblyTitle>PowerShell Cmdlet for SQLiteConnection</AssemblyTitle>
@@ -18,6 +18,10 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>SQLiteConnection</PackageTags>
     <CertificateThumbprint>601A8B683F791E51F647D34AD102C38DA4DDB65F</CertificateThumbprint>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net9.0' ">
+    <Version>7.5.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
