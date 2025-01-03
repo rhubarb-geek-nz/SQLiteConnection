@@ -21,15 +21,18 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net9.0' ">
-    <Version>7.5.0</Version>
+    <Version>9.0.0</Version>
+    <PowerShellVersion>7.5</PowerShellVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
-    <Version>7.4.5</Version>
+    <Version>8.0.8</Version>
+    <PowerShellVersion>7.4.5</PowerShellVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-    <Version>7.2.23</Version>
+    <Version>6.0.33</Version>
+    <PowerShellVersion>7.2.23</PowerShellVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -62,7 +65,7 @@
     <Delete Files="@(FilesToDelete)" />
     <Exec Command="dotnet tool restore" />
     <Exec Command="dotnet pwsh -ExecutionPolicy Bypass -NoProfile -c &quot;Set-Variable -Name 'ErrorActionPreference' -Value 'Stop'; if ( -not ( Get-Module -ListAvailable -Name '$(Company).PowerShellDataFile' ) ) { Install-Module -Name '$(Company).PowerShellDataFile' -Repository 'PSGallery' -Force }&quot; " />
-    <Exec Command="dotnet pwsh -ExecutionPolicy Bypass -NoProfile -File ./package.ps1 $(ProjectName) $(IntermediateOutputPath) $(OutDir) $(PublishDir) $(Version)" />
+    <Exec Command="dotnet pwsh -ExecutionPolicy Bypass -NoProfile -File ./package.ps1 $(ProjectName) $(IntermediateOutputPath) $(OutDir) $(PublishDir) $(Version) $(PowerShellVersion)" />
     <RemoveDir Directories="$(PublishDir)runtimes" />
     <Delete Files="$(OutDir)$(PackageId).psd1" />
   </Target>

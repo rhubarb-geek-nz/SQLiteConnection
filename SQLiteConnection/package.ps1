@@ -2,7 +2,7 @@
 # Copyright (c) 2024 Roger Brown.
 # Licensed under the MIT License.
 
-param($ProjectName, $IntermediateOutputPath, $OutDir, $PublishDir, $Version)
+param($ProjectName, $IntermediateOutputPath, $OutDir, $PublishDir, $Version, $PowerShellVersion)
 
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
@@ -28,7 +28,6 @@ $Copyright = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/Copyright'
 $AssemblyName = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/AssemblyName'
 $CompanyName = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/Company'
 $ReleaseNotes = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/PackageReleaseNotes'
-$PowerShellVersion = $Version
 
 $PublishDirLib = "$PublishDir/lib"
 
