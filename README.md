@@ -7,7 +7,7 @@ Very simple `PowerShell` module for creating a connection to an `SQLite` databas
 Use `dotnet` to build the module directory.
 
 ```
-dotnet publish SQLiteConnection.csproj --configuration Release
+dotnet publish SQLiteConnection.csproj --configuration Release --framework net8.0
 ```
 
 The `SQLite` runtime comes from [Microsoft.Data.Sqlite](https://www.nuget.org/packages/microsoft.data.sqlite). This provides native binaries for multiple platforms and architectures.
