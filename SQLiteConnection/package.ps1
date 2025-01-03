@@ -2,12 +2,11 @@
 # Copyright (c) 2024 Roger Brown.
 # Licensed under the MIT License.
 
-param($ProjectName, $IntermediateOutputPath, $OutDir, $PublishDir)
+param($ProjectName, $IntermediateOutputPath, $OutDir, $PublishDir, $Version)
 
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 $compatiblePSEdition = 'Core'
-$PowerShellVersion = '7.2'
 
 trap
 {
@@ -22,7 +21,6 @@ function Get-SingleNodeValue([System.Xml.XmlDocument]$doc,[string]$path)
 $xmlDoc = [System.Xml.XmlDocument](Get-Content "$ProjectName.csproj")
 
 $ModuleId = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/PackageId'
-$Version = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/Version'
 $ProjectUri = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/PackageProjectUrl'
 $Description = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/Description'
 $Author = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/Authors'
@@ -30,6 +28,7 @@ $Copyright = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/Copyright'
 $AssemblyName = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/AssemblyName'
 $CompanyName = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/Company'
 $ReleaseNotes = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/PackageReleaseNotes'
+$PowerShellVersion = $Version
 
 $PublishDirLib = "$PublishDir/lib"
 
@@ -39,13 +38,25 @@ if (Test-Path $PublishDirLib)
 }
 
 $null = Move-Item "$PublishDir/runtimes" $PublishDirLib
-$null = Move-Item "$PublishDir/System.Data.SQLite.dll" $PublishDirLib
+
+Remove-Item "$PublishDirLib/browser-wasm" -Recurse
+
+$null = Move-Item "$PublishDir/Microsoft*.dll" $PublishDirLib
+$null = Move-Item "$PublishDir/SQLitePCLRaw*.dll" $PublishDirLib
 $null = Move-Item "$PublishDir/$AssemblyName.Alc.dll" $PublishDirLib
 
 Get-ChildItem $PublishDirLib -Directory | ForEach-Object {
 	$RuntimeDir = $_.FullName
 
 	Get-ChildItem "$RuntimeDir/native" -Filter '*.dll' | ForEach-Object {
+		$null = Move-Item $_.FullName $RuntimeDir
+	}
+
+	Get-ChildItem "$RuntimeDir/native" -Filter 'lib*.dylib' | ForEach-Object {
+		$null = Move-Item $_.FullName $RuntimeDir
+	}
+
+	Get-ChildItem "$RuntimeDir/native" -Filter 'lib*.so' | ForEach-Object {
 		$null = Move-Item $_.FullName $RuntimeDir
 	}
 
@@ -56,7 +67,7 @@ $moduleSettings = @{
 	Path = "$OutDir$ModuleId.psd1"
 	RootModule = "$AssemblyName.dll"
 	ModuleVersion = $Version
-	Guid = 'e8e28b5f-a18e-4630-a957-856baefed648'
+	Guid = '23519034-6db5-4b2f-8f55-1b4e58d14af8'
 	Author = $Author
 	CompanyName = $CompanyName
 	Copyright = $Copyright

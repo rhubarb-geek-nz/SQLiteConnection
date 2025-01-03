@@ -1,14 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <AssemblyName>RhubarbGeekNz.SQLiteConnection.Alc</AssemblyName>
-    <Version>1.0.119</Version>
+    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+    <AssemblyName>RhubarbGeekNz.SQLiteConnection.Core.Alc</AssemblyName>
     <CertificateThumbprint>601A8B683F791E51F647D34AD102C38DA4DDB65F</CertificateThumbprint>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="rhubarb-geek-nz.SQLite.Core.NetStandard" Version="$(Version)" />
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
+    <Version>7.4.5</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+    <Version>7.2.23</Version>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.33" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.8" />
   </ItemGroup>
 
   <Target Name="Sign" AfterTargets="Compile" Condition=" '$(Configuration)' == 'Release' AND '$(OS)' == 'Windows_NT' ">

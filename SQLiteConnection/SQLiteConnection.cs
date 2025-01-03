@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Loader;
 
-namespace RhubarbGeekNz.SQLiteConnection
+namespace RhubarbGeekNz.SQLiteConnection.Core
 {
     [Cmdlet(VerbsCommon.New, "SQLiteConnection")]
     [OutputType(typeof(DbConnection))]
@@ -59,7 +59,7 @@ namespace RhubarbGeekNz.SQLiteConnection
                         {
                             if (rid.StartsWith("alpine"))
                             {
-                                os = "linux-musl";
+                                os = "alpine";
                             }
                             else
                             {
@@ -95,6 +95,8 @@ namespace RhubarbGeekNz.SQLiteConnection
 
         protected override IntPtr LoadUnmanagedDll(string unmanagedDllName)
         {
+            unmanagedDllName =  OperatingSystem.IsWindows() ? unmanagedDllName+".dll" : OperatingSystem.IsMacOS() ? $"lib{unmanagedDllName}.dylib" : $"lib{unmanagedDllName}.so";
+
             string nativeAssemblyPath = Path.Combine(
                     nativeDependencyDirPath,
                     unmanagedDllName);

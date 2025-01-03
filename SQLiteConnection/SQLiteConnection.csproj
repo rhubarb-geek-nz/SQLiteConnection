@@ -1,14 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <AssemblyName>RhubarbGeekNz.SQLiteConnection</AssemblyName>
+    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+    <AssemblyName>RhubarbGeekNz.SQLiteConnection.Core</AssemblyName>
     <Copyright>Copyright &#169; 2024 Roger Brown</Copyright>
-    <Version>1.0.119</Version>
     <AssemblyTitle>PowerShell Cmdlet for SQLiteConnection</AssemblyTitle>
     <Product>SQLiteConnection for PowerShell</Product>
     <Company>rhubarb-geek-nz</Company>
-    <PackageId>rhubarb-geek-nz.SQLiteConnection</PackageId>
+    <PackageId>rhubarb-geek-nz.SQLiteConnection.Core</PackageId>
     <Title>SQLiteConnection for PowerShell</Title>
     <Description>SQLite Connection Tool</Description>
     <Authors>Roger Brown</Authors>
@@ -19,6 +18,14 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>SQLiteConnection</PackageTags>
     <CertificateThumbprint>601A8B683F791E51F647D34AD102C38DA4DDB65F</CertificateThumbprint>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
+    <Version>7.4.5</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+    <Version>7.2.23</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -51,7 +58,7 @@
     <Delete Files="@(FilesToDelete)" />
     <Exec Command="dotnet tool restore" />
     <Exec Command="dotnet pwsh -ExecutionPolicy Bypass -NoProfile -c &quot;Set-Variable -Name 'ErrorActionPreference' -Value 'Stop'; if ( -not ( Get-Module -ListAvailable -Name '$(Company).PowerShellDataFile' ) ) { Install-Module -Name '$(Company).PowerShellDataFile' -Repository 'PSGallery' -Force }&quot; " />
-    <Exec Command="dotnet pwsh -ExecutionPolicy Bypass -NoProfile -File ./package.ps1 $(ProjectName) $(IntermediateOutputPath) $(OutDir) $(PublishDir)" />
+    <Exec Command="dotnet pwsh -ExecutionPolicy Bypass -NoProfile -File ./package.ps1 $(ProjectName) $(IntermediateOutputPath) $(OutDir) $(PublishDir) $(Version)" />
     <RemoveDir Directories="$(PublishDir)runtimes" />
     <Delete Files="$(OutDir)$(PackageId).psd1" />
   </Target>
