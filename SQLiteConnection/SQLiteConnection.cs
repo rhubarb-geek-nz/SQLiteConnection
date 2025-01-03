@@ -95,7 +95,7 @@ namespace RhubarbGeekNz.SQLiteConnection.Core
 
         protected override IntPtr LoadUnmanagedDll(string unmanagedDllName)
         {
-            unmanagedDllName =  OperatingSystem.IsWindows() ? unmanagedDllName+".dll" : OperatingSystem.IsMacOS() ? $"lib{unmanagedDllName}.dylib" : $"lib{unmanagedDllName}.so";
+            unmanagedDllName = OperatingSystem.IsWindows() ? unmanagedDllName + ".dll" : OperatingSystem.IsMacOS() ? $"lib{unmanagedDllName}.dylib" : $"lib{unmanagedDllName}.so";
 
             string nativeAssemblyPath = Path.Combine(
                     nativeDependencyDirPath,
