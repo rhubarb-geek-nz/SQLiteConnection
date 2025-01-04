@@ -22,7 +22,7 @@
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net9.0' ">
     <Version>9.0.0</Version>
-    <PowerShellVersion>7.5</PowerShellVersion>
+    <PowerShellVersion>7.5.0</PowerShellVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
