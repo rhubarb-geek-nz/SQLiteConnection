@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>SQLiteConnection</AssemblyName>
     <Copyright>Copyright &#169; 2023 Roger Brown</Copyright>
-    <Version>1.0.118.0</Version>
+    <Version>1.0.119.0</Version>
     <AssemblyTitle>PowerShell Cmdlet for SQLiteConnection</AssemblyTitle>
     <Product>SQLiteConnection for PowerShell</Product>
     <Company>rhubarb-geek-nz</Company>
@@ -17,6 +17,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryType>git</RepositoryType>
     <PackageTags>SQLiteConnection</PackageTags>
+    <CertificateThumbprint>601A8B683F791E51F647D34AD102C38DA4DDB65F</CertificateThumbprint>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,8 +27,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" />
   </ItemGroup>
+
+  <Target Name="Sign" AfterTargets="Compile" Condition=" '$(Configuration)' == 'Release' ">
+    <ItemGroup>
+        <FileToSign Include="$(IntermediateOutputPath)$(TargetFileName)" />
+    </ItemGroup>
+    <Message Importance="high" Text="Signing assemblies: @(FileToSign)" />
+    <SignFile
+          SigningTarget="@(FileToSign)"
+          CertificateThumbprint="$(CertificateThumbprint)"
+          TimestampUrl="http://timestamp.digicert.com"
+    />
+  </Target>
 
   <Target Name="Package" AfterTargets="Publish" Condition=" '$(Configuration)' == 'Release' ">
     <ItemGroup>
@@ -36,7 +49,9 @@
       <FilesToDelete Include="$(PublishDir)$(AssemblyName).pdb" />
     </ItemGroup>
     <Delete Files="@(FilesToDelete)" />
-    <Exec Command="pwsh ./package.ps1 $(AssemblyName) $(IntermediateOutputPath) $(OutDir) $(PublishDir)" />
+    <Exec Command="dotnet tool restore" />
+    <Exec Command="dotnet pwsh -NoProfile -ExecutionPolicy Bypass -c &quot;Set-Variable -Name 'ErrorActionPreference' -Value 'Stop'; if ( -not ( Get-Module -ListAvailable -Name '$(Company).PowerShellDataFile' ) ) { Install-Module -Name '$(Company).PowerShellDataFile' -Repository 'PSGallery' -Force }&quot; " />
+    <Exec Command="dotnet pwsh -NoProfile -ExecutionPolicy Bypass -File ./package.ps1 $(AssemblyName) $(IntermediateOutputPath) $(OutDir) $(PublishDir)" />
     <RemoveDir Directories="$(PublishDir)runtimes;$(PublishDir)sqlite-netStandard20-binary" />
     <Delete Files="$(OutDir)$(PackageId).psd1" />
   </Target>
