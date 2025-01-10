@@ -8,6 +8,7 @@ using System.Management.Automation;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Loader;
+using System.Text.Json;
 
 namespace RhubarbGeekNz.SQLiteConnection.Core
 {
@@ -40,54 +41,93 @@ namespace RhubarbGeekNz.SQLiteConnection.Core
 
             if (!Directory.Exists(dir))
             {
-                string hyphen_arch = rid.Substring(rid.LastIndexOf('-'));
-                string os;
+                char dsc = Path.DirectorySeparatorChar;
+                bool found = false;
 
-                if (OperatingSystem.IsWindows())
+                try
                 {
-                    os = "win";
-                }
-                else
-                {
-                    if (OperatingSystem.IsAndroid())
+                    var exe = Assembly.GetEntryAssembly().Location;
+                    int dot = exe.LastIndexOf('.');
+                    int slash = exe.LastIndexOf(dsc);
+
+                    if (dot > slash)
                     {
-                        os = "linux-bionic";
+                        exe = exe.Substring(0, dot);
                     }
-                    else
+
+                    string exeJson = exe + ".deps.json";
+
+                    using (var stream = File.OpenRead(exeJson))
                     {
-                        if (OperatingSystem.IsLinux())
+                        var doc = JsonDocument.Parse(stream);
+
+                        if (doc.RootElement.TryGetProperty("runtimes", out var runtimes))
                         {
-                            if (rid.StartsWith("alpine"))
+                            if (runtimes.TryGetProperty(rid, out var runtimeList))
                             {
-                                os = "alpine";
-                            }
-                            else
-                            {
-                                os = "linux";
-                            }
-                        }
-                        else
-                        {
-                            if (OperatingSystem.IsMacOS())
-                            {
-                                os = "osx";
-                            }
-                            else
-                            {
-                                if (System.OperatingSystem.IsFreeBSD())
+                                foreach (var runtime in runtimeList.EnumerateArray())
                                 {
-                                    os = "freebsd";
-                                }
-                                else
-                                {
-                                    os = "unix";
+                                    dir = Path.Combine(dependencyDirPath, runtime.ToString());
+
+                                    found = Directory.Exists(dir);
+
+                                    if (found)
+                                    {
+                                        break;
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                catch (FileNotFoundException)
+                {
+                }
 
-                dir = Path.Combine(dependencyDirPath, os + hyphen_arch);
+                if (!found)
+                {
+                    var exe = typeof(string).Assembly.Location;
+                    var path = exe.Split(dsc);
+                    int i = path.Length - 1;
+
+                    while (i > 0)
+                    {
+                        string file = path[--i];
+                        path[path.Length - 1] = file + ".deps.json";
+                        file = string.Join(dsc, path);
+
+                        try
+                        {
+                            using (var stream = File.OpenRead(file))
+                            {
+                                var doc = JsonDocument.Parse(stream);
+
+                                if (doc.RootElement.TryGetProperty("runtimes", out var runtimes))
+                                {
+                                    if (runtimes.TryGetProperty(rid, out var runtimeList))
+                                    {
+                                        foreach (var runtime in runtimeList.EnumerateArray())
+                                        {
+                                            dir = Path.Combine(dependencyDirPath, runtime.ToString());
+
+                                            found = Directory.Exists(dir);
+
+                                            if (found)
+                                            {
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            break;
+                        }
+                        catch (FileNotFoundException)
+                        {
+                        }
+                    }
+                }
             }
 
             this.nativeDependencyDirPath = dir;

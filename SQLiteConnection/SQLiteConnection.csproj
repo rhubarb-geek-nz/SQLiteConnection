@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>
     <AssemblyName>RhubarbGeekNz.SQLiteConnection.Core</AssemblyName>
-    <Copyright>Copyright &#169; 2024 Roger Brown</Copyright>
+    <Copyright>Copyright &#169; 2025 Roger Brown</Copyright>
     <AssemblyTitle>PowerShell Cmdlet for SQLiteConnection</AssemblyTitle>
     <Product>SQLiteConnection for PowerShell</Product>
     <Company>rhubarb-geek-nz</Company>
@@ -26,12 +26,12 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
-    <Version>8.0.8</Version>
+    <Version>8.0.11</Version>
     <PowerShellVersion>7.4.5</PowerShellVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-    <Version>6.0.33</Version>
+    <Version>6.0.36</Version>
     <PowerShellVersion>7.2.23</PowerShellVersion>
   </PropertyGroup>
 
@@ -63,9 +63,7 @@
       <FilesToDelete Include="$(PublishDir)*.pdb" />
     </ItemGroup>
     <Delete Files="@(FilesToDelete)" />
-    <Exec Command="dotnet tool restore" />
-    <Exec Command="dotnet pwsh -ExecutionPolicy Bypass -NoProfile -c &quot;Set-Variable -Name 'ErrorActionPreference' -Value 'Stop'; if ( -not ( Get-Module -ListAvailable -Name '$(Company).PowerShellDataFile' ) ) { Install-Module -Name '$(Company).PowerShellDataFile' -Repository 'PSGallery' -Force }&quot; " />
-    <Exec Command="dotnet pwsh -ExecutionPolicy Bypass -NoProfile -File ./package.ps1 $(ProjectName) $(IntermediateOutputPath) $(OutDir) $(PublishDir) $(Version) $(PowerShellVersion)" />
+    <Exec Command="pwsh -ExecutionPolicy Bypass -NoProfile -File ./package.ps1 $(ProjectName) $(IntermediateOutputPath) $(OutDir) $(PublishDir) $(Version) $(PowerShellVersion)" />
     <RemoveDir Directories="$(PublishDir)runtimes" />
     <Delete Files="$(OutDir)$(PackageId).psd1" />
   </Target>
